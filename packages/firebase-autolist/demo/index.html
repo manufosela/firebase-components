@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>firebase-autolist Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f5f5f5;
+    }
+    h1 { color: #333; }
+    .demo-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .demo-section h2 {
+      margin-top: 0;
+      color: #555;
+    }
+    .output {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>firebase-autolist Demo</h1>
+
+  <div class="demo-section">
+    <h2>Basic List</h2>
+    <firebase-autolist
+      id="basic"
+      path="/demo/users"
+      show-header
+      show-refresh
+      key-field="name"
+    ></firebase-autolist>
+    <div class="output" id="basic-output">Click an item to see details...</div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Grid Layout</h2>
+    <firebase-autolist
+      id="grid"
+      path="/demo/products"
+      layout="grid"
+      limit-to="6"
+      key-field="title"
+      style="
+        --firebase-autolist-item-bg: #f0f9ff;
+        --firebase-autolist-item-hover-bg: #e0f2fe;
+      "
+    ></firebase-autolist>
+  </div>
+
+  <div class="demo-section">
+    <h2>With Real-time Sync</h2>
+    <firebase-autolist
+      id="realtime"
+      path="/demo/messages"
+      auto-sync
+      order-by="timestamp"
+      order-direction="desc"
+      limit-to="10"
+      show-header
+    ></firebase-autolist>
+  </div>
+
+  <script type="module">
+    import { html } from 'lit';
+    import '../src/index.js';
+
+    // Basic list
+    const basic = document.getElementById('basic');
+    const basicOutput = document.getElementById('basic-output');
+
+    basic.addEventListener('item-click', (e) => {
+      basicOutput.textContent = JSON.stringify(e.detail.item, null, 2);
+    });
+
+    basic.addEventListener('list-loaded', (e) => {
+      console.log(`Loaded ${e.detail.count} items`);
+    });
+
+    // Grid with custom renderer
+    const grid = document.getElementById('grid');
+    grid.setItemRenderer((item) => html`
+      <div style="text-align: center;">
+        <strong>${item.title || item._key}</strong>
+        ${item.price ? html`<p>$${item.price}</p>` : ''}
+      </div>
+    `);
+  </script>
+</body>
+</html>

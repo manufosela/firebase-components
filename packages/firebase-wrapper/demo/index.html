@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Wrapper Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #f5f5f5;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .demo-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #666;
+        font-size: 1.25rem;
+      }
+
+      .event-log {
+        background: #1a1a2e;
+        color: #00ff88;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.875rem;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .event-log p {
+        margin: 0.25rem 0;
+      }
+
+      .code-block {
+        background: #f0f0f0;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+
+      .code-block pre {
+        margin: 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.875rem;
+      }
+
+      /* Custom CSS properties demo */
+      .custom-themed {
+        --firebase-wrapper-success-color: #4caf50;
+        --firebase-wrapper-success-bg: #e8f5e9;
+        --firebase-wrapper-pending-color: #ff9800;
+        --firebase-wrapper-pending-bg: #fff3e0;
+        --firebase-wrapper-error-color: #f44336;
+        --firebase-wrapper-error-bg: #ffebee;
+        --firebase-wrapper-emulator-bg: #9c27b0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Firebase Wrapper Component Demo</h1>
+
+    <div class="demo-section">
+      <h2>Basic Usage (No Config - Shows Error)</h2>
+      <firebase-wrapper id="basic" show-status></firebase-wrapper>
+    </div>
+
+    <div class="demo-section">
+      <h2>With Emulators Flag</h2>
+      <firebase-wrapper id="emulator" show-status emulators></firebase-wrapper>
+    </div>
+
+    <div class="demo-section custom-themed">
+      <h2>Custom Themed</h2>
+      <firebase-wrapper
+        id="themed"
+        show-status
+        emulators
+      ></firebase-wrapper>
+    </div>
+
+    <div class="demo-section">
+      <h2>With Slotted Content</h2>
+      <firebase-wrapper id="slotted" show-status>
+        <div
+          style="padding: 1rem; background: #e3f2fd; border-radius: 4px; margin-top: 1rem;"
+        >
+          <strong>Slotted Content:</strong> This content would typically be
+          other Firebase components that use the wrapper's services.
+        </div>
+      </firebase-wrapper>
+    </div>
+
+    <div class="demo-section">
+      <h2>Event Log</h2>
+      <div id="event-log" class="event-log">
+        <p>Listening for events...</p>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Usage Example</h2>
+      <div class="code-block">
+        <pre><code>&lt;firebase-wrapper
+  .config=${`{
+    apiKey: "your-api-key",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abc123",
+    databaseURL: "https://your-project.firebaseio.com"
+  }`}
+  emulators
+  show-status
+  @firebase-ready=${`handleReady`}
+  @firebase-error=${`handleError`}
+&gt;
+  &lt;!-- Your Firebase components here --&gt;
+  &lt;firebase-crud path="/users"&gt;&lt;/firebase-crud&gt;
+  &lt;firebase-loginbutton provider="google"&gt;&lt;/firebase-loginbutton&gt;
+&lt;/firebase-wrapper&gt;</code></pre>
+      </div>
+    </div>
+
+    <script type="module">
+      import '../src/firebase-wrapper.js';
+
+      const eventLog = document.getElementById('event-log');
+
+      function logEvent(type, detail) {
+        const timestamp = new Date().toLocaleTimeString();
+        const p = document.createElement('p');
+        p.textContent = `[${timestamp}] ${type}: ${JSON.stringify(detail)}`;
+        eventLog.appendChild(p);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Listen for events on all wrappers
+      document.querySelectorAll('firebase-wrapper').forEach((wrapper) => {
+        wrapper.addEventListener('firebase-ready', (e) => {
+          logEvent('firebase-ready', { services: Object.keys(e.detail) });
+        });
+
+        wrapper.addEventListener('firebase-error', (e) => {
+          logEvent('firebase-error', e.detail);
+        });
+      });
+
+      // Programmatic configuration example
+      const basicWrapper = document.getElementById('basic');
+      // Uncomment to test with real config:
+      // basicWrapper.config = {
+      //   apiKey: "your-api-key",
+      //   authDomain: "your-project.firebaseapp.com",
+      //   projectId: "your-project",
+      //   storageBucket: "your-project.appspot.com",
+      //   messagingSenderId: "123456789",
+      //   appId: "1:123456789:web:abc123"
+      // };
+    </script>
+  </body>
+</html>

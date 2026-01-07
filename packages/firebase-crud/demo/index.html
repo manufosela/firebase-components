@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase CRUD Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #f5f5f5;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .demo-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #666;
+        font-size: 1.25rem;
+      }
+
+      .controls {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.2s;
+      }
+
+      button.primary {
+        background-color: #007bff;
+        color: white;
+      }
+
+      button.primary:hover {
+        background-color: #0056b3;
+      }
+
+      button.danger {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      button.danger:hover {
+        background-color: #c82333;
+      }
+
+      button.success {
+        background-color: #28a745;
+        color: white;
+      }
+
+      button.success:hover {
+        background-color: #218838;
+      }
+
+      .event-log {
+        background: #1a1a2e;
+        color: #00ff88;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.875rem;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .event-log p {
+        margin: 0.25rem 0;
+      }
+
+      .data-display {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1rem;
+        font-family: monospace;
+        font-size: 0.875rem;
+        white-space: pre-wrap;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .inline-form {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-end;
+      }
+
+      .inline-form .form-group {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .code-block {
+        background: #f0f0f0;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+
+      .code-block pre {
+        margin: 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Firebase CRUD Component Demo</h1>
+
+    <div class="demo-section">
+      <h2>Basic CRUD Operations</h2>
+      <p>
+        This demo shows the firebase-crud component in action. Without an actual
+        Firebase connection, it demonstrates the component's UI states.
+      </p>
+
+      <firebase-crud
+        id="crud-demo"
+        path="/demo/users"
+        show-loading
+        empty-message="No users found. Add some users to get started."
+      >
+        <div class="data-display" id="data-display">Waiting for data...</div>
+      </firebase-crud>
+
+      <div class="controls" style="margin-top: 1rem;">
+        <button class="primary" onclick="simulateLoad()">
+          Simulate Data Load
+        </button>
+        <button class="success" onclick="simulateCreate()">
+          Simulate Create
+        </button>
+        <button class="danger" onclick="simulateError()">Simulate Error</button>
+        <button onclick="clearData()">Clear</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>With Auto-Sync</h2>
+      <firebase-crud
+        id="crud-sync"
+        path="/demo/messages"
+        auto-sync
+        order-by="timestamp"
+        order-direction="desc"
+        limit-to="5"
+        empty-message="No messages yet"
+      >
+      </firebase-crud>
+    </div>
+
+    <div class="demo-section">
+      <h2>Create New Item</h2>
+      <div class="inline-form">
+        <div class="form-group">
+          <label for="item-name">Name</label>
+          <input type="text" id="item-name" placeholder="Enter name" />
+        </div>
+        <div class="form-group">
+          <label for="item-email">Email</label>
+          <input type="email" id="item-email" placeholder="Enter email" />
+        </div>
+        <button class="success" onclick="createItem()">Create</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Event Log</h2>
+      <div id="event-log" class="event-log">
+        <p>Listening for events...</p>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Usage Examples</h2>
+
+      <h3>Basic Usage</h3>
+      <div class="code-block">
+        <pre><code>&lt;firebase-crud
+  path="/users"
+  show-loading
+  empty-message="No users found"
+  @data-loaded=${`handleDataLoaded`}
+  @data-error=${`handleError`}
+&gt;
+  &lt;!-- Custom content to render data --&gt;
+&lt;/firebase-crud&gt;</code></pre>
+      </div>
+
+      <h3>With Auto-Sync and Query Options</h3>
+      <div class="code-block">
+        <pre><code>&lt;firebase-crud
+  path="/messages"
+  auto-sync
+  order-by="timestamp"
+  order-direction="desc"
+  limit-to="10"
+  @data-loaded=${`handleMessages`}
+&gt;
+&lt;/firebase-crud&gt;</code></pre>
+      </div>
+
+      <h3>Programmatic CRUD Operations</h3>
+      <div class="code-block">
+        <pre><code>const crud = document.querySelector('firebase-crud');
+
+// Create
+const key = await crud.create({ name: 'John', email: 'john@example.com' });
+
+// Read
+const user = await crud.read(key);
+
+// Update
+await crud.update(key, { name: 'John Doe' });
+
+// Delete
+await crud.delete(key);
+
+// Refresh data
+await crud.refresh();</code></pre>
+      </div>
+    </div>
+
+    <script type="module">
+      import '../src/firebase-crud.js';
+
+      const eventLog = document.getElementById('event-log');
+      const dataDisplay = document.getElementById('data-display');
+
+      function logEvent(type, detail) {
+        const timestamp = new Date().toLocaleTimeString();
+        const p = document.createElement('p');
+        p.textContent = `[${timestamp}] ${type}: ${JSON.stringify(detail)}`;
+        eventLog.appendChild(p);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Listen for events on all crud components
+      document.querySelectorAll('firebase-crud').forEach((crud) => {
+        crud.addEventListener('data-loaded', (e) => {
+          logEvent('data-loaded', { path: e.detail.path, hasData: !!e.detail.data });
+          if (e.target.id === 'crud-demo' && e.detail.data) {
+            dataDisplay.textContent = JSON.stringify(e.detail.data, null, 2);
+          }
+        });
+
+        crud.addEventListener('data-error', (e) => {
+          logEvent('data-error', e.detail);
+        });
+
+        crud.addEventListener('data-updated', (e) => {
+          logEvent('data-updated', e.detail);
+        });
+      });
+
+      // Expose functions to window for button onclick handlers
+      window.simulateLoad = () => {
+        const crud = document.getElementById('crud-demo');
+        crud._data = [
+          { _key: 'user1', name: 'John Doe', email: 'john@example.com' },
+          { _key: 'user2', name: 'Jane Smith', email: 'jane@example.com' },
+          { _key: 'user3', name: 'Bob Wilson', email: 'bob@example.com' },
+        ];
+        crud._loading = false;
+        crud._error = '';
+        crud._dispatchDataLoaded();
+        crud.requestUpdate();
+        dataDisplay.textContent = JSON.stringify(crud._data, null, 2);
+      };
+
+      window.simulateCreate = () => {
+        const crud = document.getElementById('crud-demo');
+        const newUser = {
+          _key: 'user' + Date.now(),
+          name: 'New User',
+          email: 'new@example.com',
+        };
+        if (!crud._data) crud._data = [];
+        crud._data.push(newUser);
+        crud._dispatchDataUpdated('create', newUser._key, newUser);
+        crud.requestUpdate();
+        dataDisplay.textContent = JSON.stringify(crud._data, null, 2);
+      };
+
+      window.simulateError = () => {
+        const crud = document.getElementById('crud-demo');
+        crud._error = 'Permission denied: Unable to access database';
+        crud._dispatchError(crud._error);
+        crud.requestUpdate();
+      };
+
+      window.clearData = () => {
+        const crud = document.getElementById('crud-demo');
+        crud._data = null;
+        crud._error = '';
+        crud.requestUpdate();
+        dataDisplay.textContent = 'Waiting for data...';
+      };
+
+      window.createItem = () => {
+        const name = document.getElementById('item-name').value;
+        const email = document.getElementById('item-email').value;
+
+        if (!name || !email) {
+          alert('Please fill in both fields');
+          return;
+        }
+
+        const crud = document.getElementById('crud-demo');
+        const newItem = {
+          _key: 'user' + Date.now(),
+          name,
+          email,
+        };
+
+        if (!crud._data) crud._data = [];
+        crud._data.push(newItem);
+        crud._dispatchDataUpdated('create', newItem._key, newItem);
+        crud.requestUpdate();
+        dataDisplay.textContent = JSON.stringify(crud._data, null, 2);
+
+        // Clear form
+        document.getElementById('item-name').value = '';
+        document.getElementById('item-email').value = '';
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>firebase-uploadfile Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f5f5f5;
+    }
+    h1 { color: #333; }
+    .demo-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .demo-section h2 {
+      margin-top: 0;
+      color: #555;
+    }
+    .output {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>firebase-uploadfile Demo</h1>
+
+  <div class="demo-section">
+    <h2>Basic Upload</h2>
+    <firebase-uploadfile
+      id="basic"
+      path="/demo/uploads"
+      accept="image/*"
+      max-size="5242880"
+    ></firebase-uploadfile>
+    <div class="output" id="basic-output">Select a file to upload...</div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Multiple Files with Auto Upload</h2>
+    <firebase-uploadfile
+      id="multi"
+      path="/demo/uploads"
+      accept="image/*,.pdf"
+      multiple
+      auto-upload
+      show-progress
+    ></firebase-uploadfile>
+    <div class="output" id="multi-output">Select files to upload automatically...</div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Custom Styling</h2>
+    <firebase-uploadfile
+      id="custom"
+      path="/demo/uploads"
+      button-text="Choose Image"
+      style="
+        --firebase-uploadfile-border-color: #6366f1;
+        --firebase-uploadfile-active-color: #4f46e5;
+        --firebase-uploadfile-btn-bg: #6366f1;
+        --firebase-uploadfile-progress-color: #6366f1;
+      "
+    ></firebase-uploadfile>
+  </div>
+
+  <script type="module">
+    import '../src/index.js';
+
+    // Basic upload events
+    const basic = document.getElementById('basic');
+    const basicOutput = document.getElementById('basic-output');
+
+    basic.addEventListener('upload-progress', (e) => {
+      basicOutput.textContent = `Uploading: ${e.detail.progress}%`;
+    });
+
+    basic.addEventListener('upload-complete', (e) => {
+      basicOutput.innerHTML = `
+        <strong>Upload Complete!</strong><br>
+        URL: ${e.detail.downloadURL}<br>
+        Path: ${e.detail.fullPath}
+      `;
+    });
+
+    basic.addEventListener('upload-error', (e) => {
+      basicOutput.textContent = `Error: ${e.detail.message}`;
+    });
+
+    // Multi upload events
+    const multi = document.getElementById('multi');
+    const multiOutput = document.getElementById('multi-output');
+
+    multi.addEventListener('upload-complete', (e) => {
+      multiOutput.innerHTML += `<div>Uploaded: ${e.detail.name}</div>`;
+    });
+  </script>
+</body>
+</html>

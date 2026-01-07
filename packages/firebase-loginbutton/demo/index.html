@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Login Button Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #f5f5f5;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .demo-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #666;
+        font-size: 1.25rem;
+      }
+
+      .button-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .event-log {
+        background: #1a1a2e;
+        color: #00ff88;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.875rem;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .event-log p {
+        margin: 0.25rem 0;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #e3f2fd;
+        border-radius: 8px;
+      }
+
+      .user-info img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+      }
+
+      .user-info-details h3 {
+        margin: 0 0 0.25rem;
+      }
+
+      .user-info-details p {
+        margin: 0;
+        color: #666;
+        font-size: 0.875rem;
+      }
+
+      .code-block {
+        background: #f0f0f0;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+
+      .code-block pre {
+        margin: 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.875rem;
+      }
+
+      /* Custom themed buttons */
+      .custom-themed {
+        --firebase-login-button-border-radius: 24px;
+        --firebase-login-button-padding: 1rem 2rem;
+        --firebase-login-google-bg: #4285f4;
+        --firebase-login-google-color: white;
+        --firebase-login-google-border: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Firebase Login Button Component Demo</h1>
+
+    <div class="demo-section">
+      <h2>All Providers</h2>
+      <div class="button-grid">
+        <firebase-loginbutton provider="google"></firebase-loginbutton>
+        <firebase-loginbutton provider="github"></firebase-loginbutton>
+        <firebase-loginbutton provider="email"></firebase-loginbutton>
+        <firebase-loginbutton provider="anonymous"></firebase-loginbutton>
+        <firebase-loginbutton provider="microsoft"></firebase-loginbutton>
+        <firebase-loginbutton provider="twitter"></firebase-loginbutton>
+        <firebase-loginbutton provider="facebook"></firebase-loginbutton>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Custom Labels</h2>
+      <div class="button-grid">
+        <firebase-loginbutton
+          provider="google"
+          label="Continue with Google"
+        ></firebase-loginbutton>
+        <firebase-loginbutton
+          provider="github"
+          label="Login via GitHub"
+        ></firebase-loginbutton>
+        <firebase-loginbutton
+          provider="email"
+          label="Use Email & Password"
+        ></firebase-loginbutton>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Disabled State</h2>
+      <div class="button-grid">
+        <firebase-loginbutton provider="google" disabled></firebase-loginbutton>
+        <firebase-loginbutton provider="github" disabled></firebase-loginbutton>
+      </div>
+    </div>
+
+    <div class="demo-section custom-themed">
+      <h2>Custom Styled</h2>
+      <div class="button-grid">
+        <firebase-loginbutton provider="google"></firebase-loginbutton>
+        <firebase-loginbutton provider="github"></firebase-loginbutton>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Logout Button</h2>
+      <p>The button changes to logout when show-logout is set and user is authenticated.</p>
+      <firebase-loginbutton
+        id="logout-demo"
+        provider="google"
+        show-logout
+      ></firebase-loginbutton>
+      <button onclick="simulateLogin()" style="margin-left: 1rem; padding: 0.5rem 1rem;">
+        Simulate Login
+      </button>
+    </div>
+
+    <div class="demo-section">
+      <h2>User Info Display (When Logged In)</h2>
+      <div id="user-display" style="display: none;">
+        <div class="user-info">
+          <img id="user-photo" src="" alt="User photo" />
+          <div class="user-info-details">
+            <h3 id="user-name">User Name</h3>
+            <p id="user-email">user@example.com</p>
+          </div>
+        </div>
+      </div>
+      <p id="no-user">Not logged in. Click a login button above.</p>
+    </div>
+
+    <div class="demo-section">
+      <h2>Event Log</h2>
+      <div id="event-log" class="event-log">
+        <p>Listening for events...</p>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Usage Examples</h2>
+
+      <h3>Basic Usage</h3>
+      <div class="code-block">
+        <pre><code>&lt;firebase-loginbutton
+  provider="google"
+  @login-success=${`handleSuccess`}
+  @login-error=${`handleError`}
+&gt;&lt;/firebase-loginbutton&gt;</code></pre>
+      </div>
+
+      <h3>With Custom Label</h3>
+      <div class="code-block">
+        <pre><code>&lt;firebase-loginbutton
+  provider="github"
+  label="Sign in with GitHub"
+  scopes="user:email,read:org"
+&gt;&lt;/firebase-loginbutton&gt;</code></pre>
+      </div>
+
+      <h3>Email/Password Login</h3>
+      <div class="code-block">
+        <pre><code>&lt;firebase-loginbutton
+  provider="email"
+  label="Login"
+  @login-success=${`handleSuccess`}
+&gt;&lt;/firebase-loginbutton&gt;</code></pre>
+      </div>
+
+      <h3>With Logout Functionality</h3>
+      <div class="code-block">
+        <pre><code>&lt;firebase-loginbutton
+  provider="google"
+  show-logout
+  @login-success=${`handleSuccess`}
+  @logout=${`handleLogout`}
+&gt;&lt;/firebase-loginbutton&gt;</code></pre>
+      </div>
+
+      <h3>JavaScript Access</h3>
+      <div class="code-block">
+        <pre><code>const loginBtn = document.querySelector('firebase-loginbutton');
+
+// Check authentication status
+if (loginBtn.isAuthenticated) {
+  console.log('User:', loginBtn.user);
+}
+
+// Listen for events
+loginBtn.addEventListener('login-success', (e) => {
+  console.log('Logged in:', e.detail.user);
+});
+
+loginBtn.addEventListener('login-error', (e) => {
+  console.error('Login failed:', e.detail.message);
+});
+
+loginBtn.addEventListener('logout', () => {
+  console.log('User logged out');
+});</code></pre>
+      </div>
+    </div>
+
+    <script type="module">
+      import '../src/firebase-loginbutton.js';
+
+      const eventLog = document.getElementById('event-log');
+
+      function logEvent(type, detail) {
+        const timestamp = new Date().toLocaleTimeString();
+        const p = document.createElement('p');
+        p.textContent = `[${timestamp}] ${type}: ${JSON.stringify(detail)}`;
+        eventLog.appendChild(p);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      function updateUserDisplay(user) {
+        const userDisplay = document.getElementById('user-display');
+        const noUser = document.getElementById('no-user');
+
+        if (user) {
+          document.getElementById('user-photo').src =
+            user.photoURL || 'https://via.placeholder.com/48';
+          document.getElementById('user-name').textContent =
+            user.displayName || 'Anonymous User';
+          document.getElementById('user-email').textContent =
+            user.email || 'No email';
+          userDisplay.style.display = 'block';
+          noUser.style.display = 'none';
+        } else {
+          userDisplay.style.display = 'none';
+          noUser.style.display = 'block';
+        }
+      }
+
+      // Listen for events on all login buttons
+      document.querySelectorAll('firebase-loginbutton').forEach((btn) => {
+        btn.addEventListener('login-success', (e) => {
+          logEvent('login-success', e.detail);
+          updateUserDisplay(e.detail.user);
+        });
+
+        btn.addEventListener('login-error', (e) => {
+          logEvent('login-error', e.detail);
+        });
+
+        btn.addEventListener('logout', (e) => {
+          logEvent('logout', {});
+          updateUserDisplay(null);
+        });
+      });
+
+      // Simulate login for demo purposes
+      window.simulateLogin = () => {
+        const logoutDemo = document.getElementById('logout-demo');
+        logoutDemo._user = {
+          uid: 'demo-uid',
+          email: 'demo@example.com',
+          displayName: 'Demo User',
+          photoURL: 'https://via.placeholder.com/48',
+          emailVerified: true,
+          providerId: 'google.com',
+        };
+        logoutDemo.requestUpdate();
+        updateUserDisplay(logoutDemo._user);
+        logEvent('simulated-login', { user: logoutDemo._user });
+      };
+    </script>
+  </body>
+</html>

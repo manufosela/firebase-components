@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@manufosela/firebase-components</title>
+  <style>
+    :root {
+      --primary: #f59e0b;
+      --primary-dark: #d97706;
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --firebase: #ffca28;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      text-align: center;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--firebase), #ff6f00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .subtitle { color: var(--text-muted); font-size: 1.2rem; }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+    .stat {
+      text-align: center;
+      padding: 1rem 2rem;
+      background: var(--bg-card);
+      border-radius: 0.5rem;
+    }
+    .stat-value { font-size: 2rem; font-weight: bold; color: var(--firebase); }
+    .stat-label { color: var(--text-muted); font-size: 0.875rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--firebase), #ff6f00);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .card-title { font-size: 1.25rem; font-weight: 600; }
+    .card-desc { color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
+    .card-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { background: var(--bg); }
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 3rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    footer a { color: var(--firebase); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>@manufosela/firebase-components</h1>
+      <p class="subtitle">Firebase web components built with Lit 3</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">7</div>
+          <div class="stat-label">Components</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Lit 3</div>
+          <div class="stat-label">Framework</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">MIT</div>
+          <div class="stat-label">License</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🗄️</div>
+          <h2 class="card-title">firebase-crud</h2>
+        </div>
+        <p class="card-desc">CRUD operations wrapper for Firebase Realtime Database with auto-sync and real-time updates.</p>
+        <div class="card-links">
+          <a href="packages/firebase-crud/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-crud" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔐</div>
+          <h2 class="card-title">firebase-loginbutton</h2>
+        </div>
+        <p class="card-desc">Authentication button supporting Google, GitHub, and email/password providers.</p>
+        <div class="card-links">
+          <a href="packages/firebase-loginbutton/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-loginbutton" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📝</div>
+          <h2 class="card-title">firebase-autoform</h2>
+        </div>
+        <p class="card-desc">Auto-generated forms from database schema with validation and submission handling.</p>
+        <div class="card-links">
+          <a href="packages/firebase-autoform/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-autoform" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📤</div>
+          <h2 class="card-title">firebase-uploadfile</h2>
+        </div>
+        <p class="card-desc">File upload component for Firebase Storage with progress tracking and validation.</p>
+        <div class="card-links">
+          <a href="packages/firebase-uploadfile/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-uploadfile" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📋</div>
+          <h2 class="card-title">firebase-autolist</h2>
+        </div>
+        <p class="card-desc">Auto-generated lists from Firebase database with templating and real-time updates.</p>
+        <div class="card-links">
+          <a href="packages/firebase-autolist/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-autolist" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <h2 class="card-title">firebase-loginheader</h2>
+        </div>
+        <p class="card-desc">Header component displaying authentication state with avatar and user menu.</p>
+        <div class="card-links">
+          <a href="packages/firebase-loginheader/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-loginheader" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔧</div>
+          <h2 class="card-title">firebase-wrapper</h2>
+        </div>
+        <p class="card-desc">Firebase initialization wrapper with emulator support and configuration management.</p>
+        <div class="card-links">
+          <a href="packages/firebase-wrapper/demo/" class="btn btn-primary">Demo</a>
+          <a href="https://github.com/manufosela/firebase-components/tree/main/packages/firebase-wrapper" class="btn btn-outline">Source</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Created by <a href="https://github.com/manufosela">@manufosela</a></p>
+      <p style="margin-top: 0.5rem;">Built with Lit 3 | pnpm workspaces | Changesets</p>
+    </footer>
+  </div>
+</body>
+</html>
