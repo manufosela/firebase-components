@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Autoform Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      h1 {
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+
+      .description {
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+        gap: 2rem;
+        align-items: start;
+      }
+
+      .panel {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .panel h2 {
+        margin: 0 0 1rem;
+        color: var(--accent);
+        font-size: 1.1rem;
+      }
+
+      .event-log {
+        background: var(--bg-panel);
+        padding: 1rem;
+        border-radius: 10px;
+        min-height: 200px;
+        max-height: 320px;
+        overflow-y: auto;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.85rem;
+        color: var(--text);
+      }
+
+      .event-log p {
+        margin: 0 0 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px dashed var(--border);
+      }
+
+      .event-log p:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .schema-note {
+        background: var(--bg-panel);
+        border-radius: 10px;
+        padding: 1rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Firebase Autoform</h1>
+    <p class="description">
+      Generate a full form from a schema definition. Submits to Firebase when
+      configured, and always emits events for local workflows.
+    </p>
+
+    <div class="layout">
+      <div class="panel">
+        <h2>Auto-generated form</h2>
+        <firebase-autoform id="autoform"></firebase-autoform>
+      </div>
+
+      <div class="panel">
+        <h2>Event log</h2>
+        <div class="event-log" id="eventLog"></div>
+        <div class="schema-note" style="margin-top: 1.5rem;">
+          Schema fields: text, email, number, select, checkbox, textarea, and grouped sections.
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import '../src/firebase-autoform.js';
+
+      const form = document.getElementById('autoform');
+      const eventLog = document.getElementById('eventLog');
+
+      form.schema = {
+        name: { type: 'text', label: 'Name', required: true, placeholder: 'Ada Lovelace' },
+        email: { type: 'email', label: 'Email', required: true, placeholder: 'ada@domain.com' },
+        age: { type: 'number', label: 'Age', min: 18, max: 99, group: 'Profile' },
+        role: {
+          type: 'select',
+          label: 'Role',
+          options: [
+            { value: 'admin', label: 'Admin' },
+            { value: 'editor', label: 'Editor' },
+            { value: 'viewer', label: 'Viewer' }
+          ],
+          group: 'Profile'
+        },
+        subscribed: { type: 'checkbox', label: 'Newsletter opt-in', group: 'Preferences' },
+        notes: { type: 'textarea', label: 'Notes', placeholder: 'Optional notes', group: 'Preferences' }
+      };
+
+      form.path = '/users';
+      form.submitLabel = 'Save profile';
+      form.resetLabel = 'Reset';
+      form.showSuccess = true;
+      form.successMessage = 'Saved locally. Ready for Firebase!';
+
+      const log = (label, detail) => {
+        const entry = document.createElement('p');
+        entry.textContent = `${new Date().toLocaleTimeString()} - ${label}: ${JSON.stringify(detail)}`;
+        eventLog.prepend(entry);
+      };
+
+      form.addEventListener('form-submit', (event) => log('submit', event.detail));
+      form.addEventListener('form-error', (event) => log('error', event.detail));
+      form.addEventListener('form-reset', () => log('reset', {}));
+    </script>
+  </body>
+</html>
