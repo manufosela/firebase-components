@@ -9,7 +9,7 @@
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
     "site:dev": "pnpm --dir apps/site dev",
-    "site:build": "SITE_URL=https://manufosela.github.io/firebase-components/ BASE_PATH=/firebase-components/ pnpm --dir apps/site build",
+    "site:build": "SITE_URL=https://manufosela.dev/firebase-components/ BASE_PATH=/firebase-components/ pnpm --dir apps/site build",
     "site:preview": "pnpm --dir apps/site preview",
     "changeset": "changeset",
     "version": "changeset version",
