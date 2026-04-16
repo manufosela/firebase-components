@@ -3,4 +3,5 @@ export const siteConfig = {
   description: "Firebase-ready web components with live demos and integration notes.",
   repoUrl: "https://github.com/manufosela/firebase-components",
   basePath: "/firebase-components/",
+  homeUrl: "https://manufosela.dev/",
 };
