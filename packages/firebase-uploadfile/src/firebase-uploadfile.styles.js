@@ -144,4 +144,12 @@ export const styles = css`
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .upload-container,
+    .upload-btn,
+    .progress-fill {
+      transition: none;
+    }
+  }
 `;

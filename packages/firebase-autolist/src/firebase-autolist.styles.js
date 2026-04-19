@@ -127,4 +127,15 @@ export const styles = css`
   :host([layout="table"]) .list-item {
     display: table-row;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .list-item,
+    .refresh-btn {
+      transition: none;
+    }
+    .loading-spinner {
+      animation: none;
+      border-top-color: currentColor;
+    }
+  }
 `;

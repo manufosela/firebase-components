@@ -210,4 +210,15 @@ export const styles = css`
     color: var(--firebase-login-error-color, #721c24);
     font-size: 0.875rem;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .login-button,
+    .form-group input {
+      transition: none;
+    }
+    .loading-spinner {
+      animation: none;
+      border-top-color: currentColor;
+    }
+  }
 `;

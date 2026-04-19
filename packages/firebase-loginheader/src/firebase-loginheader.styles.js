@@ -209,4 +209,17 @@ export const styles = css`
       transform: rotate(360deg);
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .user-info,
+    .login-btn,
+    .menu-item,
+    .dropdown-icon {
+      transition: none;
+    }
+    .loading-spinner {
+      animation: none;
+      border-top-color: currentColor;
+    }
+  }
 `;

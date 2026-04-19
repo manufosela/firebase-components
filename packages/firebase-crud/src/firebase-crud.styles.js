@@ -106,4 +106,15 @@ export const styles = css`
       opacity: 0.4;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loading-spinner {
+      animation: none;
+      border-top-color: currentColor;
+    }
+    .sync-indicator--active .sync-dot {
+      animation: none;
+      opacity: 1;
+    }
+  }
 `;

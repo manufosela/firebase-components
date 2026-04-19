@@ -203,4 +203,15 @@ export const styles = css`
     font-weight: 600;
     color: var(--firebase-autoform-legend-color, #495057);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .form-input,
+    .form-button {
+      transition: none;
+    }
+    .loading-spinner {
+      animation: none;
+      border-top-color: currentColor;
+    }
+  }
 `;
